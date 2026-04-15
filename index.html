@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+   <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -118,7 +118,8 @@
             cursor: pointer;
         }
         .product-card:hover { transform: translateY(-3px); box-shadow: 0 12px 24px rgba(0,0,0,0.1); }
-        .product-img { height: 170px; background: #f9f5f0; display: flex; align-items: center; justify-content: center; background-size: cover; background-position: center; font-size: 3rem; }
+        .product-img { height: 180px; background: #f9f5f0; display: flex; align-items: center; justify-content: center; background-size: cover; background-position: center; font-size: 3rem; }
+        .product-img img { width: 100%; height: 100%; object-fit: cover; }
         .product-info { padding: 0.8rem; }
         .product-title { font-weight: 800; font-size: 0.95rem; }
         .vendor-badge { font-size: 0.65rem; color: #e67e22; background: #fef2e8; display: inline-block; padding: 2px 8px; border-radius: 20px; margin: 5px 0; }
@@ -157,15 +158,51 @@
         .btn-mtn { background: #FFC107; color: #1e2a2a; }
         .btn-airtel { background: #E60000; color: white; }
         
-        /* Chat styles */
-        .chat-message {
-            background: #f1f5f9; padding: 8px 12px; border-radius: 20px; margin: 6px 0;
+        /* Image Upload Styles */
+        .image-upload-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 20px;
+            padding: 15px;
+            text-align: center;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: 0.2s;
         }
+        .image-upload-area:hover { border-color: #e67e22; background: #fef3e8; }
+        .image-preview-grid {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .preview-item {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 2px solid #e67e22;
+        }
+        .preview-item img { width: 100%; height: 100%; object-fit: cover; }
+        .remove-image {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            cursor: pointer;
+        }
+        
+        .chat-message { background: #f1f5f9; padding: 8px 12px; border-radius: 20px; margin: 6px 0; }
         .chat-message.sent { background: #e67e22; color: white; text-align: right; }
-        .order-notification {
-            background: #d1fae5; padding: 10px; border-radius: 16px; margin: 8px 0;
-            border-left: 4px solid #10b981;
-        }
+        .order-notification { background: #d1fae5; padding: 10px; border-radius: 16px; margin: 8px 0; border-left: 4px solid #10b981; }
         .message-input-area { display: flex; gap: 8px; margin-top: 12px; }
         .message-input-area input { flex: 1; margin: 0; }
         .message-input-area button { width: auto; padding: 10px 16px; margin: 0; }
@@ -222,10 +259,45 @@
 <!-- Registration Modal -->
 <div id="registerModal" class="modal"><div class="modal-card"><span id="closeReg" style="float:right; font-size:1.5rem; cursor:pointer;">&times;</span><h3><i class="fas fa-handshake"></i> Become a seller</h3><div class="payment-buttons"><button id="payMTNbtn" class="btn-mtn"><i class="fas fa-circle"></i> MTN MoMo (5k)</button><button id="payAirtelBtn" class="btn-airtel"><i class="fas fa-circle"></i> Airtel Money (5k)</button></div><input type="text" id="regBusiness" placeholder="Business name"><input type="tel" id="regPhoneNum" placeholder="Phone number"><input type="text" id="regTxnRef" placeholder="Transaction reference"><button id="submitRegReq">Request approval</button><div id="regMsg"></div></div></div>
 
-<!-- Vendor Dashboard -->
-<div id="vendorModal" class="modal"><div class="modal-card"><span id="closeVendor" style="float:right; font-size:1.5rem; cursor:pointer;">&times;</span><h3><i class="fas fa-chart-line"></i> Vendor panel</h3><div id="vendorLoginDiv"><input type="tel" id="vendorLoginPhone" placeholder="Phone number"><button id="doVendorLogin">Login</button></div><div id="vendorDashboardPanel" style="display:none;"><h4>Add product</h4><input type="text" id="prodName" placeholder="Product name"><input type="number" id="prodPrice" placeholder="Price (UGX)"><select id="prodCategory"><option>Fresh Foods</option><option>Electronics</option><option>Fashion</option><option>Home & Living</option></select><textarea id="prodDesc" rows="2" placeholder="Description"></textarea><button id="publishProductBtn">Publish</button><hr><h4>Your products</h4><div id="vendorProductsList"></div></div></div></div>
+<!-- Vendor Dashboard with WORKING Image Upload -->
+<div id="vendorModal" class="modal">
+    <div class="modal-card">
+        <span id="closeVendor" style="float:right; font-size:1.5rem; cursor:pointer;">&times;</span>
+        <h3><i class="fas fa-chart-line"></i> Vendor panel</h3>
+        <div id="vendorLoginDiv">
+            <input type="tel" id="vendorLoginPhone" placeholder="Phone number">
+            <button id="doVendorLogin">Login</button>
+        </div>
+        <div id="vendorDashboardPanel" style="display:none;">
+            <h4>Add product</h4>
+            <input type="text" id="prodName" placeholder="Product name">
+            <input type="number" id="prodPrice" placeholder="Price (UGX)">
+            <select id="prodCategory">
+                <option>Fresh Foods</option>
+                <option>Electronics</option>
+                <option>Fashion</option>
+                <option>Home & Living</option>
+            </select>
+            <textarea id="prodDesc" rows="2" placeholder="Description"></textarea>
+            
+            <!-- WORKING IMAGE UPLOAD -->
+            <div class="image-upload-area" id="imageUploadArea">
+                <i class="fas fa-camera" style="font-size: 1.5rem; color: #e67e22;"></i>
+                <p>Tap to select product image from gallery</p>
+                <small style="color: #64748b;">Upload a photo of your product</small>
+                <input type="file" id="productImageInput" accept="image/*" style="display: none;">
+            </div>
+            <div id="imagePreviewContainer" class="image-preview-grid"></div>
+            
+            <button id="publishProductBtn">Publish Product</button>
+            <hr style="margin: 15px 0;">
+            <h4>Your products</h4>
+            <div id="vendorProductsList"></div>
+        </div>
+    </div>
+</div>
 
-<!-- Profile Modal with Messages & Notifications -->
+<!-- Profile Modal -->
 <div id="profileModal" class="modal">
     <div class="modal-card">
         <span id="closeProfile" style="float:right; font-size:1.5rem; cursor:pointer;">&times;</span>
@@ -266,13 +338,14 @@
     let allProducts = JSON.parse(localStorage.getItem('CM_products')) || [];
     let shoppingCart = JSON.parse(localStorage.getItem('CM_cart')) || [];
     let orders = JSON.parse(localStorage.getItem('CM_orders')) || [];
-    let messages = JSON.parse(localStorage.getItem('CM_messages')) || []; // { from, to, text, timestamp, productId }
+    let messages = JSON.parse(localStorage.getItem('CM_messages')) || [];
     let notifications = JSON.parse(localStorage.getItem('CM_notifications')) || [];
     
     const ADMIN_PASSWORD = "creed2561";
     const PAYMENT_NUMBER = "0709298041";
-    let currentUserId = null; // phone number of logged in user
+    let currentUserId = null;
     let currentChatWith = null;
+    let currentProductImage = null;
     
     function saveAll() {
         localStorage.setItem('CM_approved', JSON.stringify(approvedVendors));
@@ -287,18 +360,56 @@
     function showToast(msg) { let t = document.createElement('div'); t.className = 'toast'; t.innerText = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 2500); }
     function updateCartUI() { let total = shoppingCart.reduce((s, i) => s + i.qty, 0); document.getElementById('cartCount').innerText = total; }
     
-    // Place order - creates notification for vendor
+    // WORKING IMAGE UPLOAD
+    const imageUploadArea = document.getElementById('imageUploadArea');
+    const imageInput = document.getElementById('productImageInput');
+    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+    
+    if (imageUploadArea) {
+        imageUploadArea.addEventListener('click', () => {
+            if (imageInput) imageInput.click();
+        });
+    }
+    
+    if (imageInput) {
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    currentProductImage = event.target.result;
+                    if (imagePreviewContainer) {
+                        imagePreviewContainer.innerHTML = `
+                            <div class="preview-item">
+                                <img src="${currentProductImage}" alt="Product preview">
+                                <span class="remove-image" onclick="removeImage()">✖</span>
+                            </div>
+                        `;
+                    }
+                    showToast("Image selected!");
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+    
+    window.removeImage = function() {
+        currentProductImage = null;
+        if (imagePreviewContainer) imagePreviewContainer.innerHTML = '';
+        if (imageInput) imageInput.value = '';
+        showToast("Image removed");
+    };
+    
     function placeOrder() {
         if (shoppingCart.length === 0) { alert("Cart empty"); return; }
         let orderId = Date.now();
         let orderItems = [...shoppingCart];
         let totalAmount = orderItems.reduce((s, i) => s + (i.price * i.qty), 0);
         
-        // For each product, get vendor and create notification
         orderItems.forEach(item => {
             let product = allProducts.find(p => p.id === item.id);
             if (product && product.vendorPhone) {
-                let notif = {
+                notifications.push({
                     id: Date.now() + Math.random(),
                     userId: product.vendorPhone,
                     type: 'order',
@@ -307,8 +418,7 @@
                     timestamp: new Date().toISOString(),
                     read: false,
                     orderId: orderId
-                };
-                notifications.push(notif);
+                });
             }
         });
         
@@ -322,7 +432,6 @@
         updateProfileNotifications();
     }
     
-    // Send message
     function sendMessage(toPhone, text) {
         if (!text.trim() || !currentUserId) return;
         messages.push({
@@ -333,7 +442,6 @@
             timestamp: new Date().toISOString(),
             read: false
         });
-        // Also create notification for receiver
         notifications.push({
             id: Date.now(),
             userId: toPhone,
@@ -388,9 +496,8 @@
             badge.style.display = 'none';
             if (countSpan) countSpan.innerText = '0';
         }
-        // load notifications list if profile is open
         let notifContainer = document.getElementById('notificationsList');
-        if (notifContainer) {
+        if (notifContainer && currentUserId) {
             let allUserNotifs = notifications.filter(n => n.userId === currentUserId).sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
             notifContainer.innerHTML = allUserNotifs.map(n => `
                 <div class="order-notification" style="${n.read ? 'opacity:0.7;' : 'background:#fef3c7;'}">
@@ -412,7 +519,6 @@
     };
     
     function loadConversations() {
-        // get all unique users that messaged with current user
         let involvedPhones = [...new Set(messages.filter(m => m.from === currentUserId || m.to === currentUserId).map(m => m.from === currentUserId ? m.to : m.from))];
         let container = document.getElementById('conversationsList');
         if (involvedPhones.length === 0) {
@@ -454,7 +560,7 @@
         let grid = document.getElementById('productsGrid');
         if (filtered.length === 0) { grid.innerHTML = `<div style="text-align:center; padding:2rem;">No products found</div>`; return; }
         grid.innerHTML = filtered.map(p => {
-            let imgHtml = p.images && p.images[0] ? `<div class="product-img" style="background-image:url('${p.images[0]}'); background-size:cover;"></div>` : `<div class="product-img">📦</div>`;
+            let imgHtml = p.image ? `<div class="product-img"><img src="${p.image}" alt="${p.name}"></div>` : `<div class="product-img">📦</div>`;
             return `<div class="product-card">
                 ${imgHtml}
                 <div class="product-info">
@@ -559,14 +665,26 @@
         let desc = document.getElementById('prodDesc').value.trim();
         if (!name || isNaN(price)) { alert("Valid name & price"); return; }
         let vendorInfo = approvedVendors.find(v => v.phone === currentVendor);
-        allProducts.push({ id: Date.now(), name, price, category, description: desc, images: [], vendorPhone: currentVendor, vendorName: vendorInfo.name });
+        allProducts.push({ 
+            id: Date.now(), 
+            name, 
+            price, 
+            category, 
+            description: desc, 
+            image: currentProductImage,
+            vendorPhone: currentVendor, 
+            vendorName: vendorInfo.name 
+        });
         saveAll();
         renderMarketplace();
         loadVendorProducts();
         document.getElementById('prodName').value = '';
         document.getElementById('prodPrice').value = '';
         document.getElementById('prodDesc').value = '';
-        showToast("Product published!");
+        currentProductImage = null;
+        if (imagePreviewContainer) imagePreviewContainer.innerHTML = '';
+        if (imageInput) imageInput.value = '';
+        showToast("Product published with image!");
     };
     
     // Profile Modal
@@ -618,4 +736,4 @@
     updateCartUI();
 </script>
 </body>
-</html>                                
+</html>     
